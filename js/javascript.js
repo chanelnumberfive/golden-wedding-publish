@@ -57,7 +57,6 @@ $(function () {
 });
 
 //弹幕开始
-// JavaScript Document
 + function ($) {
    'use strict';
    
@@ -68,9 +67,9 @@ $(function () {
 		this.clear=[];
 		this.index=obj.index||0;
 		this.newIndex=obj.newIndex||0;
-		this.time=obj.time||8;
+		this.time=obj.time||16;
 		this.displacement=obj.displacement||$(window).width();
-		this.data=obj.data||[{name:111,url:'images/1.jpg',words:'新婚快乐'}];
+		this.data=obj.data||[{name:111,words:222,url:'images/1.jpg'}];
 		this.spacing=obj.spacing||$(window).width()/6;
 		this.parallax=obj.parallax||5;
 		this.isOpen=true;
@@ -78,7 +77,8 @@ $(function () {
 	
 	//发送弹幕消息
     Danmu.prototype.sendWish=function(data) {
-        this.data.splice(++this.newIndex,0, data);
+		this.newIndex=this.newIndex+1;
+        this.data.splice(this.newIndex,0, data);
     };
 	
     //为每个弹幕盒子分配一条消息
@@ -109,7 +109,7 @@ $(function () {
 	//添加弹幕消息
 	function addDanmu(data,elem){
 		if (data.data.length !== 0&&data.isOpen===false) {
-			if(data.index >= data.data.length){data.index = 0;}
+			if(data.index >= data.data.length){data.newIndex=data.index = 0;}
 			data.newIndex = data.newIndex>data.index?data.newIndex:data.index;
 			var $target = assignMessage($(elem), data.data[data.index++]);
 			var w=$target.width()+data.spacing;
@@ -168,6 +168,7 @@ $(function () {
 			data.clear=[];
 		});
 	};
+	$('[data-blz-danmu]').initDanmu({time:8});
 	$('[data-blz-danmu]').danmuOpen();
 }(window.Zepto||window.jQuery);
 //弹幕初始化
@@ -177,6 +178,8 @@ $(function () {
     'use strict';
 	var $target=$('[data-blz-goldenwedding]');
     var $BPW = $('.blz-photo-wisher');
+	var $alert=$('.blz-bk');
+	var $SYA=$('.blz-see-you-again');
     var a = [
 		2, 3, 4, 5, 6, 11, 13, 15, 16, 17, 18, 19,
 		21, 22, 26, 27, 31, 33, 35, 38,
@@ -221,13 +224,13 @@ $(function () {
 		$elem.data('blz-goldenwedding',customData).html(customData.html);
 		customData.html=$elem.find('li');
 	}
-    /*制作随机数*/
-    function makeRandom(n) { /*参数n为随机数的上限*/
+    //制作随机数
+    function makeRandom(n) { //参数n为随机数的上限
         return Math.floor(Math.random() * n);
     }
 
-    /*数组自减*/
-    function arrayDecrement(a, index) { /*a为目标数组，index为要删除的数组值得索引*/
+    //数组自减
+    function arrayDecrement(a, index) { //a为目标数组，index为要删除的数组值得索引
         return a.splice(index, 1);
     }
 	
@@ -243,6 +246,11 @@ $(function () {
 		arrayDecrement(a1, aRandom);
 	}
 	
+	//图片点击效果
+	function seeYouAgain(img,$target){
+	    $target.html('<img src="' + img.src + '"><p>' + img.title + '</p><span>刚刚为Ta们购买</span>');
+		$alert.fadeIn(300);
+	}
 	//初始化金婚动画模块
 	$.fn.initGoldWedding=function(fontApperance,matrix,data){//参数三为在页面加载之前就已经存在的动画数据
 		this.each(function(index,elem){
@@ -253,12 +261,13 @@ $(function () {
 		});
 		return this;
 	};
-	/*插入图片函数*/
+	//插入图片函数
     $.fn.insertImage=function(data,callback) {
 		return this.each(function(inde,elem){
 			var _this=$(elem);
 			var index=_this.data('index');
 			var img = new Image();
+			var div=document.createElement('div');
 			var data1=_this.data('blz-goldenwedding');
 			var a1=data1.copyFont;
 			var $lis=data1.html;
@@ -269,10 +278,13 @@ $(function () {
 			}
 			$BPW.eq(index).addClass('preparing');
 			img.src = data.url;
+			img.title=data.name;
+			$(img).attr('data-blz-img','1');
 			img.onload = function () {
 				var aRandom = makeRandom(a1.length);
-				$lis.eq(a1[aRandom]).html('<div><img src="' + this.src + '"></div>');
-				$BPW.eq(index).html('<img src="' + this.src + '"><p>' + data.name + '</p><span>刚刚为Ta们购买</span>');
+				div.appendChild(this);
+				$lis.eq(a1[aRandom]).append(div);
+				$BPW.eq(index).html('<img src="' + this.src + '"><p>' + this.title + '</p><span>刚刚为Ta们购买</span>');
 				setTimeout(function () {
 					$lis.eq(a1[aRandom]).find('div').fadeIn(1000);
 					$BPW.eq(index).addClass('animate');
@@ -289,9 +301,26 @@ $(function () {
 			};
 		});
     };
+	$(document).on('click.blz.alert','[data-blz-img="1"]',function(event){
+		var $elem=$(event.target);
+		seeYouAgain(event.target,$SYA);
+	});
 	//对已经标有blz-data-goldenwedding的dom元素进行金婚动画初始化;
 	$target.initGoldWedding(null,null,[]);
 }(window.jQuery);
+
+//关闭功能插件
++function($){
+	'use strict';
+	function closeWindow($target){
+	    $target.fadeOut();   
+	}
+	$(document).on('touchend','.blz-bk',function(){
+		closeWindow($(this));
+	});
+}(window.jQuery);
+
+//金婚动画数据请求
 +function($){
 	'use strict';
 	var tip={
