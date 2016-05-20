@@ -315,6 +315,24 @@ html {
 .blz-text-center {
 	text-align:center;
 }
+.blz-close {
+	padding:0.5rem;
+	float:right;
+	color:#fff;
+	font-size:1rem;
+	}
+.blz-bk {
+	display:none;
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	width:100%;
+	height:100vh;
+	background-color:rgba(0, 0, 0, 1);
+	z-index:99999999;
+}
 .blz-para-small {
     padding: 0.25rem 1rem;
     padding-bottom: 0.75rem;
@@ -437,7 +455,7 @@ html {
 .blz-photo {
     position: relative;
 }
-
+.blz-see-you-again,
 .blz-photo-wisher {
     position: absolute;
     width: 4.2rem;
@@ -451,12 +469,19 @@ html {
     background-color: rgba(10, 10, 10, 0.5);
     z-index: 1000;
 }
-
+.blz-see-you-again {
+	display:inline-block;
+	width:auto;
+	max-width:80%;
+   -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); 
+}
+.blz-see-you-again p,
 .blz-photo-wisher p {
     padding: 0.4em;
     text-align: center;
 }
-
+.blz-see-you-again span,
 .blz-photo-wisher span {
     position: absolute;
     top: 0.4rem;
@@ -465,7 +490,9 @@ html {
     font-size: 0.4rem;
     background-color: rgba(10, 10, 10, 0.6);
 }
-
+.blz-see-you-again img {
+	max-width:100%;
+}
 .blz-photo-wisher img {
     width: 4.2rem;
     height: 4.2rem;
@@ -473,7 +500,7 @@ html {
 
 .blz-photo-wall {
     position: relative;
-    width: 12rem;
+    width: 15rem;
     padding-bottom: 0.5rem;
     margin: 0 auto;
     color: #fff;
@@ -486,7 +513,7 @@ html {
     box-sizing: border-box;
     position: relative;
     float: left;
-    width: 0.6rem;
+    width: 0.75rem;
     border-bottom: 1px solid transparent;
     border-right: 1px solid transparent;
     list-style: none;
